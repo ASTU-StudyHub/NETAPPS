@@ -1,8 +1,14 @@
 void main() throws Exception {
-    String[] address = IO.readln("Сервер (IP:порт): ").split(":");
-    Socket socket = new Socket(address[0], Integer.parseInt(address[1]));
+    Socket socket;
+    try {
+        String[] address = IO.readln("Сервер (IP:порт): ").strip().split(":");
+        socket = new Socket(address[0], Integer.parseInt(address[1]));
+    } catch (Exception e) {
+        IO.println("Не удалось подключиться: нужен адрес вида IP:порт и запущенный сервер");
+        return;
+    }
     PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-    out.println(IO.readln("Имя (без пробелов): "));
+    out.println(Objects.toString(IO.readln("Имя (без пробелов): "), "").strip());
     IO.println("Сообщение: <адресат> <текст>, адресат: * (всем), #группа или имя");
     IO.println("Файл: <адресат> /file <путь>   Группа: /group #группа имя1 имя2 ...");
     new Thread(() -> read(socket)).start();
